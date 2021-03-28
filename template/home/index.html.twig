@@ -5,6 +5,8 @@
 {% block content %}
     <div class="container">
         <div>текущее время и дата: {{ "now"|date("c") }}</div>
+        <div>название класса контроллера, который отвечает за отображение этой страницы: {{ class_name }}</div>
+        <div>название метода контроллера, который отправляет данные на эту страницу: {{ method_name }}</div>
         <h1 class="mt-5 mb-4">{{ trailers | length }} iTunes Movie trailers</h1>
         <table class="table table-bordered">
             {% for trailer in trailers %}
