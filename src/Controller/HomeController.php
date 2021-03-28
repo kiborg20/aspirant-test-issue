@@ -37,6 +37,20 @@ class HomeController
         return $response;
     }
 
+    public function detail(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+    {
+        try {
+            $data = $this->twig->render('detail/index.html.twig', [
+            ]);
+        } catch (\Exception $e) {
+            throw new HttpBadRequestException($request, $e->getMessage(), $e);
+        }
+
+        $response->getBody()->write($data);
+
+        return $response;
+    }
+
     protected function fetchData(): Collection
     {
         $data = $this->em->getRepository(Movie::class)
@@ -45,3 +59,4 @@ class HomeController
         return new ArrayCollection($data);
     }
 }
+// ->findOneBy(['id' => '1']);
