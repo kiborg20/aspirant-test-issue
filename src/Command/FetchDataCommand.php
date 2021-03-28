@@ -83,8 +83,8 @@ class FetchDataCommand extends Command
     protected function processXml(string $data): void
     {
         $xml = (new \SimpleXMLElement($data))->children();
-//        $namespace = $xml->getNamespaces(true)['content'];
-//        dd((string) $xml->channel->item[0]->children($namespace)->encoded);
+        $namespace = $xml->getNamespaces(true)['content'];
+        // dd((string) $xml->channel->item[0]->children($namespace)->encoded);
 
         if (!property_exists($xml, 'channel')) {
             throw new RuntimeException('Could not find \'channel\' element in feed');
@@ -94,12 +94,16 @@ class FetchDataCommand extends Command
             if ($i>9)
                 continue;
 
+                $encoded_content = (string) $item->children($namespace)->encoded;
+                preg_match('/src="(\w+.+\.jpg|.png)"/i', $encoded_content, $matches, PREG_OFFSET_CAPTURE);
+                $src = str_replace(['src', '=', '"'], "", $matches[0][0]);
+
                 $trailer = $this->getMovie((string) $item->title)
                     ->setTitle((string) $item->title)
                     ->setDescription((string) $item->description)
                     ->setLink((string) $item->link)
                     ->setPubDate($this->parseDate((string) $item->pubDate))
-                    ->setImage((string) $item->link)
+                    ->setImage($src)
                 ;
 
                 $this->doctrine->persist($trailer);
